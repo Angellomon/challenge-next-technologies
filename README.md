@@ -139,6 +139,53 @@ Para la extracción, se utilizaron los datos ya cargados en el punto 1.2 verific
 
 Hubieron detalles, como datos con ``` company_id ``` o ``` name ``` nulos. Para mitigar, se asociaron los ids en un diccionario con sus valores (names) respectivos y se limpiaron evaluando que no estuvieran en un _set_ de datos inválidos
 
+### 1.5 SQL Query
+
+Query para poner por compañía los montos totales por día
+```javascript
+    db.Companies.aggregate(
+    [
+        {
+            $unwind: "$charges"
+        },
+        {
+            $group: {
+                _id: {
+                    name: "$name",
+                    date: "created_at"
+                }
+            }
+            
+        },
+        {
+            $lookup: {
+                from: "Charges",
+                localField: "_id",
+                foreignField: "company_id",
+                pipeline: [
+                    {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: "amount"
+                            }
+                        }
+                    }
+                ],
+                as: "charges"
+            }
+        },
+        {
+            $addFields: {
+                total: {
+                    $first: "$charges.total"
+                }
+            }
+        }
+    ]
+)
+```
+la colección de pagos/cargos se llama "Charges"
 
 ## Instalación
 Se debe acceder y clonar el repositiorio. De preferencia utilizar una __línea de comando__ compatible con ´bash´ en un sistema operativo basado en unix (MacOS/Linux), debido a las herramientas utilizadas. En caso de Windows, utilziar CMDer.
