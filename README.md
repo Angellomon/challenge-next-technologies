@@ -54,7 +54,7 @@ Ahora, las colecciones se describen mediante clases, cuyos atributos se validan 
         paid_at: datetime | None = None
 
         class Settings:
-            name = "Charges"
+            name = "Charges" # determina el nombre de la colección en MongoDB
 ```
 Los datos para crear un documento en la colección puede ser un diccionario arbitrario o un JSON, Pydantic valida cada atributo con el tipo de dato que se le especifica, incluso documentos embebidos, éstos siendo descritos con BaseModel
 
@@ -85,6 +85,39 @@ Al cargar la información se ignoraron las _newlines_ vacías. De igual modo al 
 + campos vacíos cuando no deben estarlo
 
 Para evitar la pérdida de datos, implementé una colección especial llamada __InvalidPayments__, cuya función es almacenar los registro erróneos para posteriormente corregirlos de manera orgánica.
+
+### Punto 1.3 Transformación
+Los datos se modelaron con base a la siguiente clase
+
+```python
+    from beanie import Document
+    from enum imoprt Enum
+
+
+    class PaymentStatus(str, Enum):
+        voided = "voided"
+        pending = "pending_payment"
+        paid = "paid"
+        pre_authorized = "pre_authorized"
+        refunded = "refunded"
+        charged_back = "charged_back"
+        expired = "expired"
+        partially_refunded = "partially_refunded"
+
+    class PaymentDoc(Document):
+        id: str
+        name: str
+        company_id: str
+        amount: float
+        status: PaymentStatus
+        created_at: datetime
+        paid_at: datetime | None = None
+```
+
+Donde _PaymentStatus_ es una enumeración de posibles estatus que podría tener un pago/cargo. Se eligió este patrón para tener un control de los estatus
+_PaymentDoc_ describe el pago como tal con los respectivos tipos, siendo None el equivalente a NULL
+
+
 
 ## Instalación
 Se debe acceder y clonar el repositiorio. De preferencia utilizar una __línea de comando__ compatible con ´bash´ en un sistema operativo basado en unix (MacOS/Linux), debido a las herramientas utilizadas. En caso de Windows, utilziar CMDer.
