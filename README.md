@@ -56,7 +56,7 @@ Ahora, las colecciones se describen mediante clases, cuyos atributos se validan 
         class Settings:
             name = "Charges" # determina el nombre de la colección en MongoDB
 ```
-Los datos para crear un documento en la colección puede ser un diccionario arbitrario o un JSON, Pydantic valida cada atributo con el tipo de dato que se le especifica, incluso documentos embebidos, éstos siendo descritos con BaseModel
+Los datos para crear un documento en la colección puede ser un diccionario arbitrario o un JSON, Pydantic valida cada atributo con el tipo de dato que se le especifica, incluso documentos embebidos, éstos siendo descritos con BaseModel, eg:
 
 ```python
     from beanie import Document
@@ -112,11 +112,32 @@ Los datos se modelaron con base a la siguiente clase
         status: PaymentStatus
         created_at: datetime
         paid_at: datetime | None = None
+
+        class Settings:
+            name = "Charges" # determina el nombre de la colección en MongoDB
 ```
 
 Donde _PaymentStatus_ es una enumeración de posibles estatus que podría tener un pago/cargo. Se eligió este patrón para tener un control de los estatus
 _PaymentDoc_ describe el pago como tal con los respectivos tipos, siendo None el equivalente a NULL
 
+### 1.4 Dispersión de la información
+Al igual que con los pagos/cargos, se elaboró una clase para describir a las empresas/_companies_
+
+```python
+    from beanie import Document
+
+
+    class CompanyDoc(Document):
+    id: str
+    name: str
+
+    class Settings:
+        name = "Companies"
+```
+
+Para la extracción, se utilizaron los datos ya cargados en el punto 1.2 verificando los campos de interés ``` company_id, name ``` para posteriormente validarlos con _Pydantic_ y darlos de alta con _Beanie_
+
+Hubieron detalles, como datos con ``` company_id ``` o ``` name ``` nulos. Para mitigar, se asociaron los ids en un diccionario con sus valores (names) respectivos y se limpiaron evaluando que no estuvieran en un _set_ de datos inválidos
 
 
 ## Instalación
