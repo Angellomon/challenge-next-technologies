@@ -71,6 +71,21 @@ Los datos para crear un documento en la colección puede ser un diccionario arbi
         contacto: Contacto
 ```
 
+### Punto 1.2 Extracción
+Se extrajo la información desde un csv. Se hizo uso de la librería estándar para extraer la información (csv)
+Este se dividió en varios pasos
+1. Extraer headers y datos
+2. _Armar_ una lista de diccionarios con los headers y diccionarios
+3. Validar la lista de diccionarios con _Pydantic_
+4. Cargar los datos a la base de datos con _Beanie_
+
+Al cargar la información se ignoraron las _newlines_ vacías. De igual modo al validar se encontró que hubo datos sucios, como
++ status erróneos
++ ids inválidos
++ campos vacíos cuando no deben estarlo
+
+Para evitar la pérdida de datos, implementé una colección especial llamada __InvalidPayments__, cuya función es almacenar los registro erróneos para posteriormente corregirlos de manera orgánica.
+
 ## Instalación
 Se debe acceder y clonar el repositiorio. De preferencia utilizar una __línea de comando__ compatible con ´bash´ en un sistema operativo basado en unix (MacOS/Linux), debido a las herramientas utilizadas. En caso de Windows, utilziar CMDer.
 Al utilizar Python, este se debe configurar con las siguientes herramientas
