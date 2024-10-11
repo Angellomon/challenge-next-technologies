@@ -39,6 +39,7 @@ class CompanyCreate(BaseModel):
     id: str
     name: str
 
+
 # TODO: impl proper error management
 def process_errors(errors, data):
     return InvalidPaymentCreate(**data)
@@ -65,12 +66,20 @@ def validate_payments(
 
     return payments, invalid_payments
 
-def extract_companies(data: list[any], invalid_id_values = [None, "*******"]) -> list[CompanyCreate]:
+
+def extract_companies(
+    data: list[any], invalid_id_values=[None, "*******"]
+) -> list[CompanyCreate]:
     companies_dict = {}
 
     for element in data:
         _id = element["company_id"]
         if _id not in companies_dict and _id not in invalid_id_values:
             companies_dict[_id] = element["name"]
-    
-    return [CompanyCreate(**{"id": elem[0], "name": elem[1]}, ) for elem in companies_dict.items()]
+
+    return [
+        CompanyCreate(
+            **{"id": elem[0], "name": elem[1]},
+        )
+        for elem in companies_dict.items()
+    ]

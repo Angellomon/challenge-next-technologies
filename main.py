@@ -22,7 +22,6 @@ async def setup_data():
 
     json_data = transform_data_to_json(headers, data)
 
-
     payments, invalid_payments = validate_payments(json_data)
 
     await PaymentDoc.insert_many(

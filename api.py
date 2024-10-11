@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 
+
 class CalculadoraNumerosNaturales(BaseModel):
     top: int = 100
-    
+
     extracted: int | None = Field(None, le=100)
 
     def extract(self, num: int):
@@ -14,7 +15,7 @@ class CalculadoraNumerosNaturales(BaseModel):
     def calculate_missing(self):
         if self.extracted is None:
             raise ValueError("extracted number not defined")
-        
+
         number_set = self._get_number_set()
 
         i = 0
@@ -26,19 +27,20 @@ class CalculadoraNumerosNaturales(BaseModel):
 
             if number + 1 != number_set[i + 1]:
                 return number + 1
-            
+
             # if number_set[i] + 1 != number_set[i + 1]:
             #     return number_set[i] + 1
 
             i += 1
-        
-        return self.top # 
-    
+
+        return self.top  #
+
     def _get_number_set(self):
         if self.extracted is None:
             raise ValueError("extracted number not defined")
-        
+
         return [i for i in range(0, self.top + 1) if i != self.extracted]
+
 
 if __name__ == "__main__":
     calc = CalculadoraNumerosNaturales(top=100)
