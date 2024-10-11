@@ -39,8 +39,8 @@ async def setup_data():
 async def main():
     await init_mongodb()
 
-    # await setup_companies()
     await setup_data()
+    await setup_companies()
 
     close_mongodb()
 
